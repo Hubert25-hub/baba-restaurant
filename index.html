@@ -2,7 +2,7 @@
 <html lang="bn">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <link rel="manifest" href="manifest.webmanifest" />
     <meta name="theme-color" content="#3a1c02" />
@@ -50,6 +50,9 @@
         }
       }
       * { box-sizing: border-box; }
+      html, body { touch-action: manipulation; }
+      a, button, input, select, textarea, label,
+      .dish, .tab, [data-open] { touch-action: manipulation; }
       html { -webkit-text-size-adjust: 100%; }
       body {
         margin: 0;
@@ -1134,6 +1137,22 @@
       document.getElementById("langEn").addEventListener("click", function () { setLang("en"); });
 
       renderAll();
+    </script>
+    <script>
+      /* Anti double-tap zoom (iOS installed app): ignore a second touchend
+         landing less than 300 ms after the previous one. Scrolling and
+         normal taps are untouched. */
+      (function () {
+        var lastTouchEnd = 0;
+        document.addEventListener("touchend", function (e) {
+          var now = Date.now();
+          if (now - lastTouchEnd < 300) e.preventDefault();
+          lastTouchEnd = now;
+        }, { passive: false });
+        document.addEventListener("gesturestart", function (e) {
+          e.preventDefault();
+        });
+      })();
     </script>
     <script>
       if ("serviceWorker" in navigator) {
