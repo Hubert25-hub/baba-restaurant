@@ -4,7 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <link rel="icon" href="data:," />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#3a1c02" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Baba Restaurant" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="icon-192.png" />
     <title>বাবা রেস্টুরেন্ট — Baba Restaurant, Kolkata</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -320,6 +327,69 @@
         display: none; place-items: center; padding: 0 5px;
       }
       .tab .badge.show { display: grid; }
+      .cart-item .ci-meta { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+      .cart-item .ci-note { font-size: 12.5px; color: var(--ink-soft); font-style: italic; margin-top: 2px; }
+      /* ---------- dish sheet ---------- */
+      .dish img, .dish h3 { cursor: pointer; }
+      .sheet-backdrop {
+        position: fixed; inset: 0; background: rgba(24, 10, 2, .55);
+        opacity: 0; pointer-events: none; transition: opacity .25s ease; z-index: 70;
+      }
+      .sheet-backdrop.show { opacity: 1; pointer-events: auto; }
+      .sheet {
+        position: fixed; left: 50%; bottom: 0; width: min(480px, 100%);
+        max-height: 92dvh; overflow-y: auto;
+        background: var(--bg); border-radius: 22px 22px 0 0;
+        transform: translate(-50%, 105%); transition: transform .3s ease;
+        z-index: 80; box-shadow: 0 -12px 40px rgba(0, 0, 0, .35);
+      }
+      .sheet.show { transform: translate(-50%, 0); }
+      @media (prefers-reduced-motion: reduce) { .sheet, .sheet-backdrop { transition: none; } }
+      .sheet-media { position: relative; }
+      .sheet-media img { width: 100%; height: 240px; object-fit: cover; display: block; }
+      .sheet-close {
+        position: absolute; top: 12px; right: 12px; width: 36px; height: 36px;
+        border: 0; border-radius: 50%; background: rgba(24, 10, 2, .55); color: #fff;
+        font-size: 22px; line-height: 1; cursor: pointer; display: grid; place-items: center;
+      }
+      .sheet-body { padding: 16px 18px 0; }
+      .sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+      .sheet-head h2 { font-family: "Baloo Da 2", "Hind Siliguri", sans-serif; font-size: 24px; font-weight: 800; margin: 0; line-height: 1.2; }
+      .sheet-desc { color: var(--ink-soft); font-size: 14.5px; line-height: 1.5; margin: 6px 0 0; }
+      .sheet-price { font-size: 19px; font-weight: 700; color: var(--red-deep); margin-top: 8px; }
+      .sheet-label { font-size: 15px; font-weight: 700; margin: 18px 0 9px; }
+      .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+      .pill { position: relative; }
+      .pill input { position: absolute; opacity: 0; pointer-events: none; }
+      .pill span {
+        display: inline-block; border: 1px solid var(--line); background: var(--surface);
+        border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer;
+      }
+      .pill input:checked + span { background: var(--red); border-color: var(--red); color: #fff; }
+      .pill input:focus-visible + span { outline: 2px solid var(--saffron); outline-offset: 2px; }
+      .extra-list { display: flex; flex-direction: column; gap: 8px; }
+      .extra-row {
+        display: flex; align-items: center; gap: 10px;
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: 12px; padding: 11px 12px; cursor: pointer; font-size: 14.5px;
+      }
+      .extra-row input { width: 19px; height: 19px; accent-color: var(--red); flex: none; margin: 0; }
+      .extra-name { font-weight: 600; }
+      .extra-price { margin-left: auto; font-weight: 700; color: var(--red-deep); white-space: nowrap; }
+      .sheet textarea {
+        width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
+        background: var(--surface); border: 1px solid var(--line); border-radius: 11px;
+        padding: 11px 12px; outline: none; resize: vertical;
+      }
+      .sheet textarea:focus { border-color: var(--saffron); }
+      .sheet-foot {
+        position: sticky; bottom: 0; display: flex; align-items: center; gap: 12px;
+        background: var(--tab-bg); backdrop-filter: blur(10px);
+        margin: 18px -18px 0; padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+        border-top: 1px solid var(--line);
+      }
+      .sheet-step button { width: 34px; height: 34px; font-size: 19px; }
+      .sheet-add { margin-top: 0; flex: 1; padding: 13px; }
       /* ---------- toast ---------- */
       .toast {
         position: fixed; bottom: 96px; left: 50%; transform: translate(-50%, 16px);
@@ -330,14 +400,6 @@
       }
       .toast.show { opacity: 1; transform: translate(-50%, 0); }
     </style>
-    <link rel="manifest" href="manifest.webmanifest">
-    <meta name="theme-color" content="#3a1c02">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Baba Restaurant">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   </head>
   <body>
     <div class="app">
@@ -447,6 +509,9 @@
         </button>
       </nav>
 
+      <div class="sheet-backdrop" id="sheetBackdrop"></div>
+      <div class="sheet" id="dishSheet" role="dialog" aria-modal="true" aria-label="Dish details"></div>
+
       <div class="toast" id="toast" role="status"></div>
     </div>
 
@@ -528,6 +593,29 @@
       var byId = {};
       DISHES.forEach(function (d) { byId[d.id] = d; });
 
+      var SPICY = [
+        { id: "none", bn: "ঝাল নয়", en: "Not spicy" },
+        { id: "mild", bn: "কম ঝাল", en: "Mild" },
+        { id: "medium", bn: "মাঝারি ঝাল", en: "Medium" },
+        { id: "hot", bn: "বেশি ঝাল", en: "Very spicy" }
+      ];
+      var EXTRAS = [
+        { id: "rice", price: 60, bn: "বাড়তি ভাত", en: "Extra rice" },
+        { id: "raita", price: 50, bn: "রায়তা", en: "Raita" },
+        { id: "naan", price: 60, bn: "বাটার নান", en: "Butter naan" },
+        { id: "gulab", price: 70, bn: "গুলাব জামুন (২ পিস)", en: "Gulab jamun (2 pc)" },
+        { id: "lassi", price: 110, bn: "মিষ্টি লস্যি", en: "Sweet lassi" }
+      ];
+      var extraById = {};
+      EXTRAS.forEach(function (x) { extraById[x.id] = x; });
+      function spicyName(id) {
+        for (var i = 0; i < SPICY.length; i++) {
+          if (SPICY[i].id === id) return lang === "bn" ? SPICY[i].bn : SPICY[i].en;
+        }
+        return id;
+      }
+      function extraName(x) { return lang === "bn" ? x.bn : x.en; }
+
       var STR = {
         bn: {
           brandName: "বাবা রেস্টুরেন্ট", brandSub: "পার্ক স্ট্রিট, কলকাতা",
@@ -550,6 +638,11 @@
           orderNo: "অর্ডার নম্বর", itemsLabel: "খাবার", paidLabel: "মোট পরিশোধ",
           newOrder: "নতুন অর্ডার করুন", backHome: "হোমে ফিরুন",
           addedToast: "কার্টে যোগ হয়েছে",
+          spicyTitle: "ঝালের মাত্রা বেছে নিন",
+          extrasTitle: "সঙ্গে আরও যোগ করুন",
+          noteTitle: "বিশেষ নির্দেশনা",
+          notePh: "বিশেষ নির্দেশনা লিখুন (যেমন: পেঁয়াজ ছাড়া)",
+          sheetAdd: "কার্টে যোগ করুন",
           bookTitle: "টেবিল বুকিং", bookLead: "আগে থেকে টেবিল রেখে দিন, আমরা অপেক্ষা করব",
           fName: "আপনার নাম", fNamePh: "যেমন: রাহুল শর্মা",
           fPhone: "মোবাইল নম্বর", fPhonePh: "যেমন: ৯৮৩১১ ০৫৬৩৫",
@@ -584,6 +677,11 @@
           orderNo: "Order number", itemsLabel: "Items", paidLabel: "Total payable",
           newOrder: "Place another order", backHome: "Back to home",
           addedToast: "Added to cart",
+          spicyTitle: "Choose your spice level",
+          extrasTitle: "Complete your meal",
+          noteTitle: "Special instructions",
+          notePh: "Add your special instructions (e.g. no onion)",
+          sheetAdd: "Add to cart",
           bookTitle: "Book a table", bookLead: "Reserve ahead — we will keep your table ready",
           fName: "Your name", fNamePh: "e.g. Rahul Sharma",
           fPhone: "Mobile number", fPhonePh: "e.g. 98311 05635",
@@ -602,7 +700,7 @@
 
       /* ================= state ================= */
       var lang = "bn";
-      var cart = {};           // id -> qty
+      var cart = {};           // lineKey -> { id, qty, spicy, extras: [extraId], note }
       var activeCat = "starter";
       var lastOrder = null;
       var booking = null;
@@ -635,12 +733,25 @@
       function dishName(d) { return lang === "bn" ? d.bn : d.en; }
       function dishDesc(d) { return lang === "bn" ? d.dbn : d.den; }
       function catName(c) { return lang === "bn" ? c.bn : c.en; }
-      function cartCount() { var n = 0; for (var k in cart) n += cart[k]; return n; }
-      function cartSubtotal() { var s = 0; for (var k in cart) s += byId[k].price * cart[k]; return s; }
+      function lineKey(l) {
+        return l.id + "|" + l.spicy + "|" + l.extras.slice().sort().join(",") + "|" + l.note;
+      }
+      function defaultSpicy(d) { return (d.cat === "starter" || d.cat === "main") ? "medium" : "none"; }
+      function defaultLine(id) {
+        return { id: id, qty: 0, spicy: defaultSpicy(byId[id]), extras: [], note: "" };
+      }
+      function lineUnit(l) {
+        var u = byId[l.id].price;
+        l.extras.forEach(function (x) { u += extraById[x].price; });
+        return u;
+      }
+      function cartCount() { var n = 0; for (var k in cart) n += cart[k].qty; return n; }
+      function cartSubtotal() { var s = 0; for (var k in cart) s += lineUnit(cart[k]) * cart[k].qty; return s; }
 
       /* ================= rendering ================= */
       function stepperHTML(id, light) {
-        var q = cart[id] || 0;
+        var key = lineKey(defaultLine(id));
+        var q = cart[key] ? cart[key].qty : 0;
         if (q === 0) {
           return '<button class="add-btn" type="button" data-add="' + id + '">' + t("add") + "</button>";
         }
@@ -649,14 +760,21 @@
           '<span class="qty">' + num(q) + "</span>" +
           '<button type="button" data-inc="' + id + '" aria-label="+">+</button></span>';
       }
+      function lineStepperHTML(key) {
+        var q = cart[key] ? cart[key].qty : 0;
+        return '<span class="stepper light">' +
+          '<button type="button" data-ldec="' + esc(key) + '" aria-label="−">−</button>' +
+          '<span class="qty">' + num(q) + "</span>" +
+          '<button type="button" data-linc="' + esc(key) + '" aria-label="+">+</button></span>';
+      }
       function dishCard(d, layout) {
         return '<article class="dish">' +
           (layout === "grid"
-            ? '<div class="dish-img-wrap"><img src="' + d.img + '" alt="' + esc(dishName(d)) + '" loading="lazy" />' +
+            ? '<div class="dish-img-wrap"><img src="' + d.img + '" alt="' + esc(dishName(d)) + '" loading="lazy" data-open="' + d.id + '" />' +
               (d.pop ? '<span class="pop-badge">' + t("popular") + "</span>" : "") + "</div>"
-            : '<img src="' + d.img + '" alt="' + esc(dishName(d)) + '" loading="lazy" />') +
+            : '<img src="' + d.img + '" alt="' + esc(dishName(d)) + '" loading="lazy" data-open="' + d.id + '" />') +
           '<div class="dish-body">' +
-            '<div class="dish-top"><h3>' + dishName(d) + (d.spicy ? ' <span class="spicy" aria-hidden="true">🌶</span>' : "") + '</h3><span class="veg' + (d.veg ? "" : " nonveg") + '" aria-hidden="true"></span></div>' +
+            '<div class="dish-top"><h3 data-open="' + d.id + '">' + dishName(d) + (d.spicy ? ' <span class="spicy" aria-hidden="true">🌶</span>' : "") + '</h3><span class="veg' + (d.veg ? "" : " nonveg") + '" aria-hidden="true"></span></div>' +
             "<p>" + dishDesc(d) + "</p>" +
             '<div class="dish-foot"><span class="price">' + price(d.price) + "</span>" + stepperHTML(d.id, false) + "</div>" +
           "</div></article>";
@@ -712,12 +830,24 @@
           return;
         }
         var html = "";
-        for (var id in cart) {
-          var d = byId[id];
+        for (var key in cart) {
+          var line = cart[key];
+          var d = byId[line.id];
+          var unit = lineUnit(line);
+          var meta = "";
+          if (d.cat === "starter" || d.cat === "main") {
+            meta += '<div class="ci-meta">🌶 ' + spicyName(line.spicy) + "</div>";
+          }
+          if (line.extras.length) {
+            meta += '<div class="ci-meta">+ ' + line.extras.map(function (x) { return extraName(extraById[x]); }).join(", ") + "</div>";
+          }
+          if (line.note) {
+            meta += '<div class="ci-note">&ldquo;' + esc(line.note) + "&rdquo;</div>";
+          }
           html += '<div class="cart-item"><img src="' + d.img + '" alt="' + esc(dishName(d)) + '" />' +
-            '<div class="grow"><h3>' + dishName(d) + '</h3><div class="unit">' + price(d.price) + " · " + t("perItem") + "</div></div>" +
-            stepperHTML(id, true) +
-            '<div class="line-total">' + money(d.price * cart[id]) + "</div></div>";
+            '<div class="grow"><h3>' + dishName(d) + '</h3><div class="unit">' + price(unit) + " · " + t("perItem") + "</div>" + meta + "</div>" +
+            lineStepperHTML(key) +
+            '<div class="line-total">' + money(unit * line.qty) + "</div></div>";
         }
         var sub = cartSubtotal(), gst = sub * 0.05, tot = sub + gst;
         html += '<div class="bill">' +
@@ -787,6 +917,7 @@
         document.getElementById("langEn").classList.toggle("on", lang === "en");
         renderPopular(); renderChips(); renderMenu(); renderCart(); renderBook();
         updateBadge();
+        if (sheet) renderSheet();
       }
       function updateBadge() {
         var b = document.getElementById("cartBadge");
@@ -799,7 +930,7 @@
       function placeOrder() {
         var sub = cartSubtotal();
         var items = [];
-        for (var id in cart) items.push({ id: id, qty: cart[id] });
+        for (var key in cart) items.push({ id: cart[key].id, qty: cart[key].qty });
         lastOrder = {
           no: "BABA-" + (1000 + Math.floor(Math.random() * 9000)),
           items: items,
@@ -840,12 +971,101 @@
         clearTimeout(toastTimer);
         toastTimer = setTimeout(function () { el.classList.remove("show"); }, 1400);
       }
-      function changeQty(id, delta) {
-        var q = (cart[id] || 0) + delta;
-        if (q <= 0) delete cart[id]; else cart[id] = q;
+      function changeLineQty(key, delta) {
+        var line = cart[key];
+        if (!line) return;
+        line.qty += delta;
+        if (line.qty <= 0) delete cart[key];
         updateBadge();
         renderPopular(); renderMenu(); renderCart();
         if (delta > 0) showToast();
+      }
+      function changeQty(id, delta) {
+        var key = lineKey(defaultLine(id));
+        if (!cart[key]) {
+          if (delta <= 0) return;
+          var line = defaultLine(id);
+          line.qty = 0;
+          cart[key] = line;
+        }
+        changeLineQty(key, delta);
+      }
+
+      /* ================= dish sheet ================= */
+      var sheet = null; // { id, spicy, extras: {extraId: true}, qty, note }
+      function sheetUnit() {
+        var u = byId[sheet.id].price;
+        for (var x in sheet.extras) if (sheet.extras[x]) u += extraById[x].price;
+        return u;
+      }
+      function openSheet(id) {
+        var d = byId[id];
+        sheet = { id: id, spicy: defaultSpicy(d), extras: {}, qty: 1, note: "" };
+        renderSheet();
+        document.getElementById("sheetBackdrop").classList.add("show");
+        document.getElementById("dishSheet").classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+      function closeSheet() {
+        sheet = null;
+        document.getElementById("sheetBackdrop").classList.remove("show");
+        document.getElementById("dishSheet").classList.remove("show");
+        document.body.style.overflow = "";
+      }
+      function renderSheet() {
+        if (!sheet) return;
+        var d = byId[sheet.id];
+        var html = '<div class="sheet-media"><img src="' + d.img + '" alt="' + esc(dishName(d)) + '" />' +
+          '<button class="sheet-close" type="button" data-close-sheet aria-label="Close">&times;</button></div>' +
+          '<div class="sheet-body">' +
+          '<div class="sheet-head"><h2>' + dishName(d) + (d.spicy ? ' <span class="spicy" aria-hidden="true">🌶</span>' : "") + '</h2>' +
+          '<span class="veg' + (d.veg ? "" : " nonveg") + '" aria-hidden="true"></span></div>' +
+          '<p class="sheet-desc">' + dishDesc(d) + "</p>" +
+          '<div class="sheet-price">' + price(d.price) + "</div>";
+        if (d.cat === "starter" || d.cat === "main") {
+          html += '<h3 class="sheet-label">' + t("spicyTitle") + '</h3><div class="pill-row" role="radiogroup" aria-label="' + t("spicyTitle") + '">';
+          SPICY.forEach(function (s) {
+            html += '<label class="pill"><input type="radio" name="sheet-spicy" value="' + s.id + '"' +
+              (sheet.spicy === s.id ? " checked" : "") + " /><span>" + spicyName(s.id) + "</span></label>";
+          });
+          html += "</div>";
+        }
+        html += '<h3 class="sheet-label">' + t("extrasTitle") + '</h3><div class="extra-list">';
+        EXTRAS.forEach(function (x) {
+          html += '<label class="extra-row"><input type="checkbox" data-extra="' + x.id + '"' +
+            (sheet.extras[x.id] ? " checked" : "") + ' /><span class="extra-name">' + extraName(x) +
+            '</span><span class="extra-price">+ ' + price(x.price) + "</span></label>";
+        });
+        html += "</div>";
+        html += '<h3 class="sheet-label">' + t("noteTitle") + "</h3>" +
+          '<textarea id="sheetNote" rows="2" placeholder="' + t("notePh") + '">' + esc(sheet.note) + "</textarea>";
+        html += '<div class="sheet-foot">' +
+          '<span class="stepper sheet-step"><button type="button" data-sqty="-1" aria-label="−">−</button>' +
+          '<span class="qty" id="sheetQty">' + num(sheet.qty) + '</span>' +
+          '<button type="button" data-sqty="1" aria-label="+">+</button></span>' +
+          '<button class="cta sheet-add" type="button" id="sheetAddBtn">' + t("sheetAdd") + " · " + money(sheetUnit() * sheet.qty) + "</button></div>";
+        html += "</div>";
+        document.getElementById("dishSheet").innerHTML = html;
+      }
+      function refreshSheetFoot() {
+        if (!sheet) return;
+        var q = document.getElementById("sheetQty");
+        if (q) q.textContent = num(sheet.qty);
+        var b = document.getElementById("sheetAddBtn");
+        if (b) b.textContent = t("sheetAdd") + " · " + money(sheetUnit() * sheet.qty);
+      }
+      function confirmSheet() {
+        var noteEl = document.getElementById("sheetNote");
+        if (noteEl) sheet.note = noteEl.value.trim();
+        var extras = [];
+        for (var x in sheet.extras) if (sheet.extras[x]) extras.push(x);
+        var line = { id: sheet.id, qty: sheet.qty, spicy: sheet.spicy, extras: extras, note: sheet.note };
+        var key = lineKey(line);
+        if (cart[key]) cart[key].qty += line.qty; else cart[key] = line;
+        closeSheet();
+        updateBadge();
+        renderPopular(); renderMenu(); renderCart();
+        showToast();
       }
       function switchTab(name) {
         document.querySelectorAll(".tab").forEach(function (tb) {
@@ -863,6 +1083,21 @@
 
       /* ================= events ================= */
       document.addEventListener("click", function (e) {
+        if (e.target.id === "sheetBackdrop") { closeSheet(); return; }
+        if (e.target.closest("[data-close-sheet]")) { closeSheet(); return; }
+        var open = e.target.closest("[data-open]");
+        if (open) { openSheet(open.getAttribute("data-open")); return; }
+        var sqty = e.target.closest("[data-sqty]");
+        if (sqty && sheet) {
+          sheet.qty = Math.max(1, sheet.qty + (+sqty.getAttribute("data-sqty")));
+          refreshSheetFoot();
+          return;
+        }
+        if (e.target.closest("#sheetAddBtn")) { confirmSheet(); return; }
+        var linc = e.target.closest("[data-linc]");
+        if (linc) { changeLineQty(linc.getAttribute("data-linc"), 1); return; }
+        var ldec = e.target.closest("[data-ldec]");
+        if (ldec) { changeLineQty(ldec.getAttribute("data-ldec"), -1); return; }
         var add = e.target.closest("[data-add]");
         if (add) { changeQty(add.getAttribute("data-add"), 1); return; }
         var inc = e.target.closest("[data-inc]");
@@ -883,6 +1118,18 @@
         var tab = e.target.closest("[data-tab]");
         if (tab) { switchTab(tab.getAttribute("data-tab")); }
       });
+      document.addEventListener("change", function (e) {
+        if (!sheet) return;
+        if (e.target.name === "sheet-spicy") { sheet.spicy = e.target.value; return; }
+        var ex = e.target.getAttribute ? e.target.getAttribute("data-extra") : null;
+        if (ex) { sheet.extras[ex] = e.target.checked; refreshSheetFoot(); }
+      });
+      document.addEventListener("input", function (e) {
+        if (sheet && e.target.id === "sheetNote") sheet.note = e.target.value;
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && sheet) closeSheet();
+      });
       document.getElementById("langBn").addEventListener("click", function () { setLang("bn"); });
       document.getElementById("langEn").addEventListener("click", function () { setLang("en"); });
 
@@ -891,7 +1138,7 @@
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
-          navigator.serviceWorker.register("sw.js").catch(function () {});
+          navigator.serviceWorker.register("sw.js").catch(function () { /* silent: preview has no sw.js */ });
         });
       }
     </script>
